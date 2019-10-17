@@ -26,6 +26,7 @@ public class VTools {
         server.getCommandManager().register(new CommandBroadcast(server), "broadcast", "bc", "alert");
         server.getCommandManager().register(new CommandFind(server), "find", "search");
         server.getCommandManager().register(new CommandStaffChat(server), "staffchat", "sc");
+        server.getCommandManager().register(new CommandRestart(server), "restart");
     }
 
 }
