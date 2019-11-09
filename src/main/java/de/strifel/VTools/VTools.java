@@ -21,12 +21,13 @@ public class VTools {
 
     @Subscribe
     public void onProxyInitialization(ProxyInitializeEvent event) {
-        server.getCommandManager().register(new CommandSend(server), "send", "tps");
+        server.getCommandManager().register(new CommandSend(server), "send");
         server.getCommandManager().register(new CommandSendall(server), "sendall");
         server.getCommandManager().register(new CommandBroadcast(server), "broadcast", "bc", "alert");
         server.getCommandManager().register(new CommandFind(server), "find", "search");
         server.getCommandManager().register(new CommandStaffChat(server), "staffchat", "sc");
         server.getCommandManager().register(new CommandRestart(server), "restart");
+        server.getCommandManager().register(new CommandTp(server), "tps", "jump");
     }
 
 }
