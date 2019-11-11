@@ -9,6 +9,7 @@ import net.kyori.text.format.TextColor;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CommandStaffChat implements Command {
@@ -22,9 +23,10 @@ public class CommandStaffChat implements Command {
     @Override
     public void execute(CommandSource commandSource, @NonNull String[] strings) {
         if (strings.length > 0) {
-            String message = "§4[Staff]§r " + (commandSource instanceof Player ? ((Player) commandSource).getUsername() : "Console") + " > " + String.join(" ", strings).replace("&", "§");
+            String channel = strings[0].startsWith("c:") && !strings[0].equals("c:") ? strings[0].split(":")[1] : null;
+            String message = "§4[Staff]§r " + (commandSource instanceof Player ? ((Player) commandSource).getUsername() : "Console") + (channel != null ? " (" + channel + ")" : "")+ " > " + String.join(" ", Arrays.copyOfRange(strings, channel == null ? 0 : 1, strings.length)).replace("&", "§");
             for (Player player : server.getAllPlayers()) {
-                if (player.hasPermission("vtools.staffchat")) {
+                if (player.hasPermission("vtools.staffchat" + (channel != null ? "." + channel : ""))) {
                     player.sendMessage(TextComponent.of(message));
                 }
             }
