@@ -9,3 +9,5 @@ Tools for Velocity proxy server.
 |/send|Send a user to a different server|vtools.send|
 |/sendall|Send all users to a specific server|vtools.sendall|
 |/staffchat|Chat over multiple servers in a staff only chat|vtools.staffchat|
+|/staffchat c:channelname|Chat over multiple servers in a staff only chat in a specific extra permissions channel|vtools.staffchat.channelname|
+|/servers|List all servers|vtools.servers|

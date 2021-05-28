@@ -28,6 +28,7 @@ public class VTools {
         server.getCommandManager().register(new CommandStaffChat(server), "staffchat", "sc");
         server.getCommandManager().register(new CommandRestart(server), "restart");
         server.getCommandManager().register(new CommandTp(server), "tps", "jump");
+        server.getCommandManager().register(new CommandServers(server), "servers", "allservers");
     }
 
 }
