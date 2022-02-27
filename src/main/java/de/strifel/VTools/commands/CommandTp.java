@@ -1,18 +1,19 @@
 package de.strifel.VTools.commands;
 
-import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
-import net.kyori.text.TextComponent;
-import net.kyori.text.format.TextColor;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import net.kyori.adventure.text.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class CommandTp implements Command {
+import static de.strifel.VTools.VTools.COLOR_RED;
+import static de.strifel.VTools.VTools.COLOR_YELLOW;
+
+public class CommandTp implements SimpleCommand {
 
     private final ProxyServer server;
 
@@ -21,28 +22,31 @@ public class CommandTp implements Command {
     }
 
     @Override
-    public void execute(CommandSource commandSource, @NonNull String[] strings) {
+    public void execute(Invocation commandInvocation) {
+        CommandSource commandSource = commandInvocation.source();
+        String[] strings = commandInvocation.arguments();
+
         if (commandSource instanceof Player) {
             if (strings.length == 1) {
                 Optional<Player> player = server.getPlayer(strings[0]);
                 if (player.isPresent()) {
                     player.get().getCurrentServer().ifPresent(serverConnection -> ((Player) commandSource).createConnectionRequest(serverConnection.getServer()).fireAndForget());
-                    commandSource.sendMessage(TextComponent.of("Connecting to the server of " + strings[0]).color(TextColor.YELLOW));
+                    commandSource.sendMessage(Component.text("Connecting to the server of " + strings[0]).color(COLOR_YELLOW));
                 } else {
-                    commandSource.sendMessage(TextComponent.of("Player does not exists.").color(TextColor.RED));
+                    commandSource.sendMessage(Component.text("Player does not exists.").color(COLOR_RED));
                 }
             } else {
-                commandSource.sendMessage(TextComponent.of("Usage: /tps <username>").color(TextColor.RED));
+                commandSource.sendMessage(Component.text("Usage: /tps <username>").color(COLOR_RED));
             }
         } else {
-            commandSource.sendMessage(TextComponent.of("Command is only for players.").color(TextColor.RED));
+            commandSource.sendMessage(Component.text("Command is only for players.").color(COLOR_RED));
         }
     }
 
     @Override
-    public List<String> suggest(CommandSource source, @NonNull String[] currentArgs) {
+    public List<String> suggest(Invocation commandInvocation) {
         List<String> arg = new ArrayList<>();
-        if (currentArgs.length == 1) {
+        if (commandInvocation.arguments().length == 1) {
             for (Player player : server.getAllPlayers()) {
                 arg.add(player.getUsername());
             }
@@ -51,7 +55,7 @@ public class CommandTp implements Command {
     }
 
     @Override
-    public boolean hasPermission(CommandSource source, @NonNull String[] args) {
-        return source.hasPermission("VTools.tps");
+    public boolean hasPermission(Invocation commandInvocation) {
+        return commandInvocation.source().hasPermission("VTools.tps");
     }
 }

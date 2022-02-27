@@ -1,16 +1,15 @@
 package de.strifel.VTools.commands;
 
-import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
-import net.kyori.text.TextComponent;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import net.kyori.adventure.text.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandRestart implements Command {
+public class CommandRestart implements SimpleCommand {
     private final ProxyServer server;
 
     public CommandRestart(ProxyServer server) {
@@ -19,23 +18,26 @@ public class CommandRestart implements Command {
 
 
     @Override
-    public void execute(CommandSource commandSource, @NonNull String[] strings) {
+    public void execute(SimpleCommand.Invocation invocation) {
+        CommandSource commandSource = invocation.source();
+        String[] strings = invocation.arguments();
+
         if (strings.length > 0) {
             String message = String.join(" ", strings).replace("&", "§");
             for (Player player : server.getAllPlayers()) {
-                player.disconnect(TextComponent.of(message));
+                player.disconnect(Component.text(message));
             }
         }
-        server.getCommandManager().execute(server.getConsoleCommandSource(), "shutdown");
+        server.getCommandManager().executeAsync(server.getConsoleCommandSource(), "shutdown");
     }
 
     @Override
-    public List<String> suggest(CommandSource source, @NonNull String[] currentArgs) {
+    public List<String> suggest(SimpleCommand.Invocation invocation) {
         return new ArrayList<String>();
     }
 
     @Override
-    public boolean hasPermission(CommandSource source, @NonNull String[] args) {
-        return source.hasPermission("vtools.shutdown");
+    public boolean hasPermission(SimpleCommand.Invocation invocation) {
+        return invocation.source().hasPermission("vtools.shutdown");
     }
 }

@@ -1,17 +1,17 @@
 package de.strifel.VTools.commands;
 
-import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
-import net.kyori.text.TextComponent;
-import net.kyori.text.format.TextColor;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import net.kyori.adventure.text.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandServers implements Command {
+import static de.strifel.VTools.VTools.COLOR_YELLOW;
+
+public class CommandServers implements SimpleCommand {
     private final ProxyServer server;
 
     public CommandServers(ProxyServer server) {
@@ -20,22 +20,25 @@ public class CommandServers implements Command {
 
 
     @Override
-    public void execute(CommandSource commandSource, @NonNull String[] strings) {
+    public void execute(SimpleCommand.Invocation invocation) {
+        CommandSource commandSource = invocation.source();
+        String[] strings = invocation.arguments();
+
         StringBuilder servers = new StringBuilder();
         for (RegisteredServer server : server.getAllServers()) {
             servers.append(server.getServerInfo().getName());
             servers.append(" ");
         }
-        commandSource.sendMessage(TextComponent.of(servers.toString()).color(TextColor.YELLOW));
+        commandSource.sendMessage(Component.text(servers.toString()).color(COLOR_YELLOW));
     }
 
     @Override
-    public List<String> suggest(CommandSource source, @NonNull String[] currentArgs) {
+    public List<String> suggest(SimpleCommand.Invocation invocation) {
         return new ArrayList<String>();
     }
 
     @Override
-    public boolean hasPermission(CommandSource source, @NonNull String[] args) {
-        return source.hasPermission("vtools.find");
+    public boolean hasPermission(SimpleCommand.Invocation invocation) {
+        return invocation.source().hasPermission("vtools.find");
     }
 }

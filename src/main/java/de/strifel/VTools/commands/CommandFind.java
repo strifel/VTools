@@ -1,18 +1,19 @@
 package de.strifel.VTools.commands;
 
-import com.velocitypowered.api.command.Command;
 import com.velocitypowered.api.command.CommandSource;
+import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
-import net.kyori.text.TextComponent;
-import net.kyori.text.format.TextColor;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import net.kyori.adventure.text.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class CommandFind implements Command {
+import static de.strifel.VTools.VTools.COLOR_RED;
+import static de.strifel.VTools.VTools.COLOR_YELLOW;
+
+public class CommandFind implements SimpleCommand {
     private final ProxyServer server;
 
     public CommandFind(ProxyServer server) {
@@ -21,23 +22,28 @@ public class CommandFind implements Command {
 
 
     @Override
-    public void execute(CommandSource commandSource, @NonNull String[] strings) {
+    public void execute(SimpleCommand.Invocation invocation) {
+        CommandSource commandSource = invocation.source();
+        String[] strings = invocation.arguments();
+
         if (strings.length == 1) {
             Optional<Player> player = server.getPlayer(strings[0]);
             if (player.isPresent() && player.get().getCurrentServer().isPresent()) {
-                commandSource.sendMessage(TextComponent.of("Player " + strings[0] + " is on " + player.get().getCurrentServer().get().getServerInfo().getName() + "!").color(TextColor.YELLOW));
+                commandSource.sendMessage(Component.text("Player " + strings[0] + " is on " + player.get().getCurrentServer().get().getServerInfo().getName() + "!").color(COLOR_YELLOW));
             } else {
-                commandSource.sendMessage(TextComponent.of("The player is not online!").color(TextColor.YELLOW));
+                commandSource.sendMessage(Component.text("The player is not online!").color(COLOR_YELLOW));
             }
         } else {
-            commandSource.sendMessage(TextComponent.of("Usage: /find <username>").color(TextColor.RED));
+            commandSource.sendMessage(Component.text("Usage: /find <username>").color(COLOR_RED));
         }
     }
 
     @Override
-    public List<String> suggest(CommandSource source, @NonNull String[] currentArgs) {
+    public List<String> suggest(SimpleCommand.Invocation invocation) {
+        String[] currentArgs = invocation.arguments();
+
         List<String> arg = new ArrayList<>();
-        if (currentArgs.length == 1 && source.hasPermission("vtools.find.autocomplete")) {
+        if (currentArgs.length == 1 && invocation.source().hasPermission("vtools.find.autocomplete")) {
             for (Player player : server.getAllPlayers()) {
                 arg.add(player.getUsername());
             }
@@ -46,7 +52,7 @@ public class CommandFind implements Command {
     }
 
     @Override
-    public boolean hasPermission(CommandSource source, @NonNull String[] args) {
-        return source.hasPermission("vtools.find");
+    public boolean hasPermission(SimpleCommand.Invocation invocation) {
+        return invocation.source().hasPermission("vtools.find");
     }
 }
